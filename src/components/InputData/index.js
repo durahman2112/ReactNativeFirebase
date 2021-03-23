@@ -1,7 +1,15 @@
 import React from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 
-const InputData = ({label, placeholder, keyboardType, isTextArea}) => {
+const InputData = ({
+  label,
+  placeholder,
+  keyboardType,
+  isTextArea,
+  onChangeText,
+  namaState,
+  value,
+}) => {
   if (isTextArea) {
     return (
       <>
@@ -11,6 +19,8 @@ const InputData = ({label, placeholder, keyboardType, isTextArea}) => {
           style={styles.textinputarea}
           keyboardType={keyboardType}
           multiline={true}
+          value={value}
+          onChangeText={text => onChangeText(namaState, text)}
           numberOfLines={4}></TextInput>
       </>
     );
@@ -22,7 +32,9 @@ const InputData = ({label, placeholder, keyboardType, isTextArea}) => {
       <TextInput
         placeholder={placeholder}
         style={styles.textinput}
-        keyboardType={keyboardType}></TextInput>
+        keyboardType={keyboardType}
+        value={value}
+        onChangeText={text => onChangeText(namaState, text)}></TextInput>
     </>
   );
 };

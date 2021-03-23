@@ -3,7 +3,7 @@ import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {InputData} from '../../components/';
 import FIREBASE from '../../config/FIREBASE';
 
-export default class TambahKontak extends Component {
+export default class EditKontak extends Component {
   constructor(props) {
     super(props);
 
@@ -14,6 +14,20 @@ export default class TambahKontak extends Component {
     };
   }
 
+  componentDidMount() {
+    FIREBASE.database()
+      .ref('kontak/' + this.props.route.params.id)
+      .once('value', querySnapshot => {
+        let data = querySnapshot.val() ? querySnapshot.val() : {};
+        let kontakItem = {...data};
+        this.setState({
+          nama: kontakItem.nama,
+          nomorHp: kontakItem.nomorHp,
+          alamat: kontakItem.alamat,
+        });
+      });
+  }
+
   onChangeText = (namaState, value) => {
     this.setState({
       [namaState]: value,
@@ -22,7 +36,9 @@ export default class TambahKontak extends Component {
 
   onSubmit = () => {
     if (this.state.nama && this.state.nomorHp && this.state.alamat) {
-      const kontakReferensi = FIREBASE.database().ref('kontak');
+      const kontakReferensi = FIREBASE.database().ref(
+        'kontak/' + this.props.route.params.id,
+      );
       const kontak = {
         nama: this.state.nama,
         nomorHp: this.state.nomorHp,
@@ -30,9 +46,9 @@ export default class TambahKontak extends Component {
       };
 
       kontakReferensi
-        .push(kontak)
+        .update(kontak)
         .then(data => {
-          Alert.alert('Success', 'Kontak Tersimpan');
+          Alert.alert('Success', 'Kontak Berhasil DiUpdate');
           this.props.navigation.replace('Home');
         })
         .catch(err => {
